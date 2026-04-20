@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import api from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function History() {
   // ---------------- STATE ----------------
@@ -33,6 +34,7 @@ export default function History() {
     pageIndex: 0,
     pageSize: 5,
   });
+  const navigate = useNavigate();
 
   // ---------------- FETCH DATA ----------------
   useEffect(() => {
@@ -100,8 +102,8 @@ export default function History() {
             v === "high"
               ? "bg-red-100 text-red-600"
               : v === "medium"
-              ? "bg-yellow-100 text-yellow-600"
-              : "bg-green-100 text-green-600";
+                ? "bg-yellow-100 text-yellow-600"
+                : "bg-green-100 text-green-600";
 
           return (
             <span className={`px-2 py-1 rounded-md text-xs font-semibold ${color}`}>
@@ -138,8 +140,11 @@ export default function History() {
       },
       {
         header: "Action",
-        cell: () => (
-          <button className="flex items-center gap-1 text-blue-600 hover:underline">
+        cell: ({ row }) => (
+          <button
+            onClick={() => navigate(`/admin/scan/${row.original._id}`)}
+            className="flex items-center gap-1 text-blue-600 hover:underline"
+          >
             <Eye size={14} />
             View
           </button>
