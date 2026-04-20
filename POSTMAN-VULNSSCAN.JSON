@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "Vulnerability Scanner - Auto Flow",
+    "_postman_id": "9c8e7b6a-1234-4abc-9def-123456789abc",
+    "description": "Fully automated scan flow with scanId handling and polling",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Start Scan",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();",
+              "",
+              "if (res.scanId) {",
+              "    pm.collectionVariables.set(\"scanId\", res.scanId);",
+              "    console.log(\"✅ scanId saved:\", res.scanId);",
+              "} else {",
+              "    console.log(\"❌ scanId not found\");",
+              "}",
+              "",
+              "// Move to next request",
+              "postman.setNextRequest(\"Get Scan Result (Auto Poll)\");"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"url\": \"https://testphp.vulnweb.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/scan",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "scan"]
+        }
+      }
+    },
+    {
+      "name": "Get Scan Result (Auto Poll)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();",
+              "",
+              "console.log(\"📊 Current Response:\", res);",
+              "",
+              "// If scan still running (no vulnerabilities yet)",
+              "if (!res.vulnerabilities || res.vulnerabilities.length === 0) {",
+              "    console.log(\"⏳ Scan still running... retrying in 2s\");",
+              "",
+              "    setTimeout(() => {",
+              "        postman.setNextRequest(\"Get Scan Result (Auto Poll)\");",
+              "    }, 2000);",
+              "} else {",
+              "    console.log(\"✅ Scan Completed!\");",
+              "    console.log(\"🔥 Vulnerabilities:\", res.vulnerabilities);",
+              "",
+              "    postman.setNextRequest(null);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/scans/{{scanId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "scans", "{{scanId}}"]
+        }
+      }
+    },
+    {
+      "name": "Get All Scans",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/scans",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "scans"]
+        }
+      }
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "scanId",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+/**
+ * utils/logger.js — Centralized Winston logger
+ * Provides structured logging with timestamps and log levels.
+ */
+
+'use strict';
+
+const winston = require('winston');
+
+const { combine, timestamp, printf, colorize, errors } = winston.format;
+
+// Custom log format: [TIMESTAMP] LEVEL: message { meta }
+const logFormat = printf(({ level, message, timestamp: ts, stack, ...meta }) => {
+  const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
+  return stack
+    ? `[${ts}] ${level}: ${message}\n${stack}${metaStr}`
+    : `[${ts}] ${level}: ${message}${metaStr}`;
+});
+
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: combine(
+    errors({ stack: true }),
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    logFormat
+  ),
+  transports: [
+    new winston.transports.Console({
+      format: combine(colorize(), timestamp({ format: 'HH:mm:ss' }), logFormat),
+    }),
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      maxsize: 5 * 1024 * 1024, // 5MB
+      maxFiles: 3,
+    }),
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+      maxsize: 10 * 1024 * 1024, // 10MB
+      maxFiles: 5,
+    }),
+  ],
+});
+
+module.exports = { logger };
