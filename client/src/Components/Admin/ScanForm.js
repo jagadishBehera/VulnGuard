@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, Radar, Loader2, Link2, RotateCcw } from "lucide-react";
+import { Shield, Radar,  Link2, RotateCcw } from "lucide-react";
 import api from "../../services/api";
 
 export default function ScanForm({ setScanning, setResults }) {
