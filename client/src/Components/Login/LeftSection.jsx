@@ -5,21 +5,21 @@ import lgnIllustartion3 from "../../Assets/Login/lgnIll3.png";
 
 const slides = [
   {
-    title: "Enhance Impact in Healthcare",
+    title: "Strengthen Your Cyber Defense",
     description:
-      "Boost your healthcare impact with powerful tools for patient care, data control, easy scheduling, and streamlined task management—all in one system.",
+      "Protect your systems with advanced threat detection, real-time monitoring, and intelligent security analytics designed to safeguard your digital infrastructure.",
     image: lgnIllustartion1,
   },
   {
-    title: "Streamline Appointments",
+    title: "Automated Vulnerability Scanning",
     description:
-      "Simplify your day with automated workflows and effortless appointment booking, freeing up time for what matters most—your patients.",
+      "Detect security loopholes instantly with automated scanning, continuous assessment, and smart reporting to keep your applications secure and compliant.",
     image: lgnIllustartion2,
   },
   {
-    title: "Manage Data Efficiently",
+    title: "Secure Data & Access Control",
     description:
-      "Securely manage all patient data from one place, enabling precise, quick, and efficient handling of every healthcare-related task and update.",
+      "Ensure enterprise-grade encryption, role-based access control, and secure data handling to protect sensitive information from unauthorized access.",
     image: lgnIllustartion3,
   },
 ];
@@ -30,7 +30,7 @@ export default function LeftSection({ logo }) {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Change every 5 seconds
+    }, 5000);
 
     return () => clearInterval(timer);
   }, []);
@@ -42,13 +42,17 @@ export default function LeftSection({ logo }) {
       <div className="mb-6">
         <img src={logo} alt="logo" className="w-auto h-24 mb-3" />
       </div>
-      <img src={image} alt="Illustration" className="w-auto h-72 mb-6" />
+
+      <img src={image} alt="Cyber Security Illustration" className="w-auto h-72 mb-6" />
+
       <h2 className="text-2xl font-bold text-gray-800 text-center mb-4 tracking-wide">
         {title}
       </h2>
+
       <p className="text-gray-600 tracking-wide text-center max-w-md">
         {description}
       </p>
+
       <div className="flex mt-4 space-x-2">
         {slides.map((_, index) => (
           <span
